@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drupal Pod Badge Generator</title>
+</head>
+<body>
+
+  <script type="module">
+    import { createApp } from 'https://unpkg.com/petite-vue?module'
+    createApp({
+      projectName: ``,
+      loading: false,
+      imageSrc: `https://user-images.githubusercontent.com/114017/135404618-7142248b-370b-481a-bd3b-f86ecf724d0e.png`,
+      coreSelected: '',
+      projectVersionSelected: '',
+      installprofile: '(none)',
+      installprofileOptions: ['(none)', 'default', 'minimal', 'demo_umami'],
+      coreVersions: [],
+      projectVersions: [],
+      projectDetails: {},
+      fetchProjectDetails: function() {
+        // fetch project details
+        this.loading = true;
+        fetch(`https://www.drupal.org/api-d7/node.json?field_project_machine_name=${this.projectName}`).then(response => response.json()).then(data => {
+          this.loading = false;
+          if(!data.list.length){return};
+          let thisProjectDetails = data.list[0];
+          this.projectDetails = thisProjectDetails
+          let projectVersions = Object.keys(thisProjectDetails.project_usage)
+          this.projectVersions = projectVersions
+          !this.projectVersionSelected ? this.projectVersionSelected = projectVersions[0] : '';
+        })
+      },
+      fetchCoreVersions: function() {
+        // fetch drupal versions
+        this.loading = true;
+        fetch(`https://repo.packagist.org/p2/drupal/core.json`).then(response => response.json()).then(data => {
+          this.loading = false;
+          this.coreVersions = data.packages['drupal/core'].map(release => {
+            return {
+              text: release.version,
+              value: release.version
+            }
+          })
+          !this.projectVersionSelected ? this.coreSelected = this.coreVersions[0].value : '';
+        })
+      },
+      copyToClipBoard: function() {
+        navigator.clipboard.writeText(this.buttonMarkup)
+      },
+      get gitPodURL() {
+        return `https://gitpod.io/#DP_PROJECT_NAME=${this.projectName},DP_ISSUE_FORK=,DP_ISSUE_BRANCH=,DP_PROJECT_TYPE=${this.projectDetails.type},DP_MODULE_VERSION=${this.projectVersionSelected},DP_CORE_VERSION=${this.coreSelected},DP_PATCH_FILE=,DP_INSTALL_PROFILE=${this.installprofile}/https://github.com/shaal/drupalpod`
+      },
+      get buttonMarkup() {
+        return `<a href="${this.gitPodURL}"><img src="${this.imageSrc}" alt="OpenInDrupalPod" style="max-width: 100%;"></a><div><small>get your own at <a href="https://shaal.github.io/DrupalPod/">DrupalPod</a></small></div>`
+      }
+    }).mount('#gitpod-badge')
+    </script>
+
+    <div id="gitpod-badge" v-scope v-effect="fetchCoreVersions()">
+      <h2>Badge Generator</h2>
+        <label for="project">Drupal Project Name</label>
+        https://www.drupal.org/project/<input type="text" placeholder="machine_name" name="project" v-model="projectName" @blur="fetchProjectDetails" required>
+        <br>
+        <label for="core-version">Drupal Core Versions:</label>
+        <select name="core-version" v-model="coreSelected" style="width:100%;">
+          <option v-for="(option, index) in coreVersions" :value="option.value">{{ option.text }}</option>
+        </select>
+        <br>
+        <label for="install-profile">Install profile:</label>
+        <select name="install-profile" id="install-profile" v-model="installprofile">
+          <option v-for="option in installprofileOptions" :value="option">{{ option }}</option>
+        </select>
+        <div v-if="projectName.length">
+          <label for="project-version"><span v-if="projectDetails.title">{{projectDetails.title}}</span> Project Version:</label>
+          <select name="project-version" v-model="projectVersionSelected" style="width:100%;">
+            <option v-for="(value, index) in projectVersions" :value="value">{{ value }}</option>
+          </select>
+          <div v-if="loading"><h2>Loading...</h2></div>
+          <div v-if="coreSelected.length && projectVersionSelected.length && !loading">
+            <p v-html="buttonMarkup"></p>
+            <textarea v-model="buttonMarkup" name="code" id="" cols="60" rows="6" style="width:100%"></textarea>
+            <div>
+              <button @click="copyToClipBoard">Copy Badge Code</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+
+</body>
+</html>
