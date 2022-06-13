@@ -68,7 +68,7 @@
         return `https://gitpod.io/#DP_PROJECT_NAME=${this.projectName},DP_ISSUE_FORK=,DP_ISSUE_BRANCH=,DP_PROJECT_TYPE=${this.projectDetails.type},DP_MODULE_VERSION=${this.projectVersionSelected},DP_CORE_VERSION=${this.coreSelected},DP_PATCH_FILE=,DP_INSTALL_PROFILE=${this.installprofile}/https://github.com/shaal/drupalpod`
       },
       get buttonMarkup() {
-        return `<a href="${this.gitPodURL}"><img src="${this.imageSrc}" alt="OpenInDrupalPod" style="max-width: 100%;"></a><div><small>get your own at <a href="https://shaal.github.io/DrupalPod/">DrupalPod</a></small></div>`
+        return `<a href="${this.gitPodURL}"><img src="${this.imageSrc}" alt="OpenInDrupalPod" style="max-width: 100%;"></a><div><small>get your own at <a href="https://drupalpodbadge.netlify.app">DrupalPod</a></small></div>`
       }
     }).mount('#gitpod-badge')
     </script>
