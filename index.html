@@ -48,6 +48,20 @@
         })
       },
       fetchCoreVersions: function() {
+        // if referrer is drupal.org, set project name by extracting the project name from the url ex. https://www.drupal.org/project/stage_file_proxy/ will set project name to stage_file_proxy
+        let referrer = document.referrer;
+        if(referrer.includes('drupal.org')){
+          let projectName = referrer.split('project/')[1].split('/')[0];
+          debugger;
+          this.projectName = projectName;
+          this.fetchProjectDetails();
+        }
+        // if there is a query param like ?project=stage_file_proxy, set project name to stage_file_proxy
+        let urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.has('project')){
+          this.projectName = urlParams.get('project');
+          this.fetchProjectDetails();
+        }
         // fetch drupal versions
         this.loading = true;
         fetch(`https://repo.packagist.org/p2/drupal/core.json`).then(response => response.json()).then(data => {
@@ -59,6 +73,10 @@
             }
           })
           !this.projectVersionSelected ? this.coreSelected = this.coreVersions[0].value : '';
+          // Fetch project details if project name is set
+          if(this.projectName.length){
+            this.fetchProjectDetails();
+          }
         })
       },
       copyToClipBoard: function() {
