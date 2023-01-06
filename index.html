@@ -48,14 +48,6 @@
         })
       },
       fetchCoreVersions: function() {
-        // if referrer is drupal.org, set project name by extracting the project name from the url ex. https://www.drupal.org/project/stage_file_proxy/ will set project name to stage_file_proxy
-        let referrer = document.referrer;
-        if(referrer.includes('drupal.org')){
-          let projectName = referrer.split('project/')[1].split('/')[0];
-          debugger;
-          this.projectName = projectName;
-          this.fetchProjectDetails();
-        }
         // if there is a query param like ?project=stage_file_proxy, set project name to stage_file_proxy
         let urlParams = new URLSearchParams(window.location.search);
         if(urlParams.has('project')){
