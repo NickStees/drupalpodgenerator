@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
   <style>
     body{
+      height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
       background: rgb(37,157,210);
       background: radial-gradient(circle, rgba(37,157,210,1) 0%, rgba(39,109,178,1) 50%, rgba(41,64,140,1) 100%);
@@ -29,7 +30,7 @@
     }
   </style>
 </head>
-<body>
+<body class="brand-color">
 
   <script type="module">
     import { createApp } from 'https://unpkg.com/petite-vue?module'
@@ -88,7 +89,7 @@
         return `https://gitpod.io/#DP_PROJECT_NAME=${this.projectName},DP_ISSUE_FORK=,DP_ISSUE_BRANCH=,DP_PROJECT_TYPE=${this.projectDetails.type},DP_MODULE_VERSION=${this.projectVersionSelected},DP_CORE_VERSION=${this.coreSelected},DP_PATCH_FILE=,DP_INSTALL_PROFILE=${this.installprofile}/https://github.com/shaal/drupalpod`
       },
       get buttonMarkup() {
-        return `<a href="${this.gitPodURL}"><img src="${this.imageSrc}" alt="OpenInDrupalPod" style="max-width: 100%;"></a><div><small>get your own at <a href="https://drupalpodbadge.netlify.app">DrupalPod</a></small></div>`
+        return `<a href="${this.gitPodURL}"><img src="${this.imageSrc}" alt="OpenInDrupalPod" class="mt-3" style="max-width: 100%;"></a><div><small>get your own at <a href="https://drupalpodbadge.netlify.app">DrupalPod</a></small></div>`
       }
     }).mount('#gitpod-badge')
     </script>
@@ -146,6 +147,28 @@
 </div>
 
 
+            </div>
+          </div>
+        
+          <div v-if="projectName.length">
+            <label for="project-version"><span v-if="projectDetails.title">{{projectDetails.title}}</span> Project Version:</label><br/>
+            <div class="select">
+              <select name="project-version" v-model="projectVersionSelected" class="input is-medium">
+                <option v-for="(value, index) in projectVersions" :value="value">{{ value }}</option>
+              </select>
+
+            </div>
+            <div v-if="loading"><h2>Loading...</h2></div>
+            <div v-if="coreSelected.length && projectVersionSelected.length && !loading">
+              <p v-html="buttonMarkup"></p>
+              <textarea v-model="buttonMarkup" name="code" id="" cols="60" rows="6" style="width:100%"></textarea>
+              <div>
+                <button class="button is-success" @click="copyToClipBoard">Copy Badge Code</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
 
 </body>
 </html>
