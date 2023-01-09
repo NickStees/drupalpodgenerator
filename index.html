@@ -28,147 +28,127 @@
     .container{
       height: 100vh;
     }
+
+    .bubbles{
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
   </style>
 </head>
-<body class="brand-color">
-
-  <script type="module">
-    import { createApp } from 'https://unpkg.com/petite-vue?module'
-    createApp({
-      projectName: ``,
-      loading: false,
-      imageSrc: `https://drupalpodbadge.netlify.app/badge.png`,
-      coreSelected: '',
-      projectVersionSelected: '',
-      installprofile: 'standard',
-      installprofileOptions: ['standard', 'default', 'minimal', 'demo_umami'],
-      coreVersions: [],
-      projectVersions: [],
-      projectDetails: {},
-      fetchProjectDetails: function() {
-        // fetch project details
-        this.loading = true;
-        fetch(`https://www.drupal.org/api-d7/node.json?field_project_machine_name=${this.projectName}`).then(response => response.json()).then(data => {
-          this.loading = false;
-          if(!data.list.length){return};
-          let thisProjectDetails = data.list[0];
-          this.projectDetails = thisProjectDetails
-          let projectVersions = Object.keys(thisProjectDetails.project_usage)
-          this.projectVersions = projectVersions
-          !this.projectVersionSelected ? this.projectVersionSelected = projectVersions[0] : '';
-        })
-      },
-      fetchCoreVersions: function() {
-        // if there is a query param like ?project=stage_file_proxy, set project name to stage_file_proxy
-        let urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.has('project')){
-          this.projectName = urlParams.get('project');
-          this.fetchProjectDetails();
-        }
-        // fetch drupal versions
-        this.loading = true;
-        fetch(`https://repo.packagist.org/p2/drupal/core.json`).then(response => response.json()).then(data => {
-          this.loading = false;
-          this.coreVersions = data.packages['drupal/core'].map(release => {
-            return {
-              text: release.version,
-              value: release.version
-            }
+<body>
+  <div class="bubbles">
+    <script type="module">
+      import { createApp } from 'https://unpkg.com/petite-vue?module'
+      createApp({
+        projectName: ``,
+        loading: false,
+        imageSrc: `https://drupalpodbadge.netlify.app/badge.png`,
+        coreSelected: '',
+        projectVersionSelected: '',
+        installprofile: 'standard',
+        installprofileOptions: ['standard', 'default', 'minimal', 'demo_umami'],
+        coreVersions: [],
+        projectVersions: [],
+        projectDetails: {},
+        fetchProjectDetails: function() {
+          // fetch project details
+          this.loading = true;
+          fetch(`https://www.drupal.org/api-d7/node.json?field_project_machine_name=${this.projectName}`).then(response => response.json()).then(data => {
+            this.loading = false;
+            if(!data.list.length){return};
+            let thisProjectDetails = data.list[0];
+            this.projectDetails = thisProjectDetails
+            let projectVersions = Object.keys(thisProjectDetails.project_usage)
+            this.projectVersions = projectVersions
+            !this.projectVersionSelected ? this.projectVersionSelected = projectVersions[0] : '';
           })
-          !this.projectVersionSelected ? this.coreSelected = this.coreVersions[0].value : '';
-          // Fetch project details if project name is set
-          if(this.projectName.length){
+        },
+        fetchCoreVersions: function() {
+          // if there is a query param like ?project=stage_file_proxy, set project name to stage_file_proxy
+          let urlParams = new URLSearchParams(window.location.search);
+          if(urlParams.has('project')){
+            this.projectName = urlParams.get('project');
             this.fetchProjectDetails();
           }
-        })
-      },
-      copyToClipBoard: function() {
-        navigator.clipboard.writeText(this.buttonMarkup)
-      },
-      get gitPodURL() {
-        return `https://gitpod.io/#DP_PROJECT_NAME=${this.projectName},DP_ISSUE_FORK=,DP_ISSUE_BRANCH=,DP_PROJECT_TYPE=${this.projectDetails.type},DP_MODULE_VERSION=${this.projectVersionSelected},DP_CORE_VERSION=${this.coreSelected},DP_PATCH_FILE=,DP_INSTALL_PROFILE=${this.installprofile}/https://github.com/shaal/drupalpod`
-      },
-      get buttonMarkup() {
-        return `<a href="${this.gitPodURL}"><img src="${this.imageSrc}" alt="OpenInDrupalPod" class="mt-3" style="max-width: 100%;"></a><div><small>get your own at <a href="https://drupalpodbadge.netlify.app">DrupalPod</a></small></div>`
-      }
-    }).mount('#gitpod-badge')
-    </script>
-<div class="container d-flex justify-content-center align-items-center">
-  <div class="row">
-    <div class="col">
-      <div class="card shadow p-4">
-        <div id="gitpod-badge" v-scope v-effect="fetchCoreVersions()">
-          <h1 class="text-center">DrupalPod Badge Generator</h1><hr>
-          <div class="mb-3">
-            <p class="h5 fw-bold">Project Page:</p>
-              <a href="https://github.com/shaal/DrupalPod" type="button" class="btn btn-primary btn-lg" >https://github.com/shaal/DrupalPod</a>
-          </div>
-    
-          <div class="mb-3">
-            <label for="project" class="form-label h5 fw-bold">Drupal Project Name:</label>
-            <div class="input-group input-group-lg">
-              <span class="input-group-text" id="basic-addon3">https://www.drupal.org/project/</span>
-              <input type="text" class="form-control rounded-end" id="basic-url" aria-describedby="Drupal Project Name" placeholder="machine_name" name="project" v-model="projectName" @blur="fetchProjectDetails" required>
-              <div class="invalid-feedback">
-                Please enter your Drupal project Machine Name.
-              </div>
+          // fetch drupal versions
+          this.loading = true;
+          fetch(`https://repo.packagist.org/p2/drupal/core.json`).then(response => response.json()).then(data => {
+            this.loading = false;
+            this.coreVersions = data.packages['drupal/core'].map(release => {
+              return {
+                text: release.version,
+                value: release.version
+              }
+            })
+            !this.projectVersionSelected ? this.coreSelected = this.coreVersions[0].value : '';
+            // Fetch project details if project name is set
+            if(this.projectName.length){
+              this.fetchProjectDetails();
+            }
+          })
+        },
+        copyToClipBoard: function() {
+          navigator.clipboard.writeText(this.buttonMarkup)
+        },
+        get gitPodURL() {
+          return `https://gitpod.io/#DP_PROJECT_NAME=${this.projectName},DP_ISSUE_FORK=,DP_ISSUE_BRANCH=,DP_PROJECT_TYPE=${this.projectDetails.type},DP_MODULE_VERSION=${this.projectVersionSelected},DP_CORE_VERSION=${this.coreSelected},DP_PATCH_FILE=,DP_INSTALL_PROFILE=${this.installprofile}/https://github.com/shaal/drupalpod`
+        },
+        get buttonMarkup() {
+          return `<a href="${this.gitPodURL}"><img src="${this.imageSrc}" alt="OpenInDrupalPod" class="mt-3" style="max-width: 100%;"></a><div><small>get your own at <a href="https://drupalpodbadge.netlify.app">DrupalPod</a></small></div>`
+        }
+      }).mount('#gitpod-badge')
+      </script>
+  <div class="container d-flex justify-content-center align-items-center">
+    <div class="row">
+      <div class="col">
+        <div class="card shadow p-4">
+          <div id="gitpod-badge" v-scope v-effect="fetchCoreVersions()">
+            <h1 class="text-center">DrupalPod Badge Generator</h1><hr>
+            <div class="mb-3">
+              <p class="h5 fw-bold">Project Page:</p>
+                <a href="https://github.com/shaal/DrupalPod" type="button" class="btn btn-primary btn-lg" >https://github.com/shaal/DrupalPod</a>
             </div>
-            <div class="form-text">Enter the machine name of your Drupal Project</div>
-          </div>
-    
-          <label for="core-version" class="form-label h5 fw-bold">Drupal Core Version:</label>
-          <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg" name="core-version" v-model="coreSelected">
-            <option v-for="(option, index) in coreVersions" :value="option.value">{{ option.text }}</option>
-          </select>
-    
-          <label for="install-profile" class="form-label h5 fw-bold">Install profile:</label>
-          <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg" name="install-profile" id="install-profile" v-model="installprofile">
-            <option v-for="option in installprofileOptions" :value="option">{{ option }}</option>
-          </select>
-    
-          <div v-if="projectName.length">
-            <label for="project-version" class="form-label h5 fw-bold"><span v-if="projectDetails.title">{{projectDetails.title}}</span> Project Version:</label>
-            <select name="project-version" v-model="projectVersionSelected" class="form-select form-select-lg mb-3" aria-label=".form-select-lg">
-              <option v-for="(value, index) in projectVersions" :value="value">{{ value }}</option>
+      
+            <div class="mb-3">
+              <label for="project" class="form-label h5 fw-bold">Drupal Project Name:</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text" id="basic-addon3">https://www.drupal.org/project/</span>
+                <input type="text" class="form-control rounded-end" id="basic-url" aria-describedby="Drupal Project Name" placeholder="machine_name" name="project" v-model="projectName" @blur="fetchProjectDetails" required>
+                <div class="invalid-feedback">
+                  Please enter your Drupal project Machine Name.
+                </div>
+              </div>
+              <div class="form-text">Enter the machine name of your Drupal Project</div>
+            </div>
+      
+            <label for="core-version" class="form-label h5 fw-bold">Drupal Core Version:</label>
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg" name="core-version" v-model="coreSelected">
+              <option v-for="(option, index) in coreVersions" :value="option.value">{{ option.text }}</option>
             </select>
-            <div v-if="loading"><h2>Loading...</h2></div>
-            <div v-if="coreSelected.length && projectVersionSelected.length && !loading">
-              <p v-html="buttonMarkup"></p>
-              <textarea v-model="buttonMarkup" name="code" id="" cols="60" rows="6" style="width:100%" class="form-control mono"></textarea>
-              <div class="pt-2">
-                <button class="btn btn-success btn-lg mb-4" @click="copyToClipBoard">Copy Badge Code</button>
+      
+            <label for="install-profile" class="form-label h5 fw-bold">Install profile:</label>
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg" name="install-profile" id="install-profile" v-model="installprofile">
+              <option v-for="option in installprofileOptions" :value="option">{{ option }}</option>
+            </select>
+      
+            <div v-if="projectName.length">
+              <label for="project-version" class="form-label h5 fw-bold"><span v-if="projectDetails.title">{{projectDetails.title}}</span> Project Version:</label>
+              <select name="project-version" v-model="projectVersionSelected" class="form-select form-select-lg mb-3" aria-label=".form-select-lg">
+                <option v-for="(value, index) in projectVersions" :value="value">{{ value }}</option>
+              </select>
+              <div v-if="loading"><h2>Loading...</h2></div>
+              <div v-if="coreSelected.length && projectVersionSelected.length && !loading">
+                <p v-html="buttonMarkup"></p>
+                <textarea v-model="buttonMarkup" name="code" id="" cols="60" rows="6" style="width:100%" class="form-control mono"></textarea>
+                <div class="pt-2">
+                  <button class="btn btn-success btn-lg mb-4" @click="copyToClipBoard">Copy Badge Code</button>
+                </div>
               </div>
             </div>
-          </div>
-        </div>  
+          </div>  
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
-            </div>
-          </div>
-        
-          <div v-if="projectName.length">
-            <label for="project-version"><span v-if="projectDetails.title">{{projectDetails.title}}</span> Project Version:</label><br/>
-            <div class="select">
-              <select name="project-version" v-model="projectVersionSelected" class="input is-medium">
-                <option v-for="(value, index) in projectVersions" :value="value">{{ value }}</option>
-              </select>
-
-            </div>
-            <div v-if="loading"><h2>Loading...</h2></div>
-            <div v-if="coreSelected.length && projectVersionSelected.length && !loading">
-              <p v-html="buttonMarkup"></p>
-              <textarea v-model="buttonMarkup" name="code" id="" cols="60" rows="6" style="width:100%"></textarea>
-              <div>
-                <button class="button is-success" @click="copyToClipBoard">Copy Badge Code</button>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-
+  </div>
 </body>
 </html>
