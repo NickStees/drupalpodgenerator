@@ -7,6 +7,7 @@
     "bootstrap": "^5.2.3",
     "onchange": "^7.1.0",
     "purgecss": "^5.0.0",
+    "simple-xml-to-json": "^1.0.9",
     "watch": "^1.0.2",
     "webpack": "^4.29.0"
   },
