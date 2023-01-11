@@ -52,6 +52,7 @@
       installprofileOptions: ['standard', 'default', 'minimal', 'demo_umami'],
       coreVersions: [],
       projectVersions: [],
+      projectVersions2: [],
       projectDetails: {},
       fetchProjectDetails: function () {
         // fetch project details
@@ -62,6 +63,20 @@
           let thisProjectDetails = data.list[0];
           this.projectDetails = thisProjectDetails
           let projectVersions = Object.keys(thisProjectDetails.project_usage)
+          this.projectVersions = projectVersions
+          !this.projectVersionSelected ? this.projectVersionSelected = projectVersions[0] : '';
+        })
+        // fetch project versions from https://updates.drupal.org/release-history/webform/current
+        // fetch project versions from https://updates.drupal.org/release-history/webform/8.x-5.x
+        fetch(`https://updates.drupal.org/release-history/${this.projectName}/current`).then(response => response.json()).then(data => {
+          this.loading = false;
+          if (!data.releases.length) { return };
+          let projectVersions = data.releases.map(release => {
+            return {
+              text: release.version,
+              value: release.version
+            }
+          })
           this.projectVersions = projectVersions
           !this.projectVersionSelected ? this.projectVersionSelected = projectVersions[0] : '';
         })
@@ -110,6 +125,7 @@
 
           <div id="gitpod-badge" v-scope v-effect="fetchCoreVersions()">
             <h2>DrupalPod Badge Generator</h2>
+            {{projectVersions2}}
             <p>Project Page: <a href="https://github.com/shaal/DrupalPod">github.com/shaal/DrupalPod</a></p>
             <label for="project">Drupal Project Name</label>
             https://www.drupal.org/project/<input type="text" placeholder="machine_name" name="project"

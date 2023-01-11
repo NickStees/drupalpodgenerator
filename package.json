@@ -12,5 +12,8 @@
   },
   "scripts": {
     "build": "purgecss --css node_modules/bootstrap/dist/css/bootstrap.min.css --content index.html --output style.css"
+  },
+  "dependencies": {
+    "wrangler": "^2.7.1"
   }
 }
