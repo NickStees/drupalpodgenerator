@@ -1,0 +1,16 @@
+{
+  "name": "DrupalPod",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "bootstrap": "^5.2.3",
+    "onchange": "^7.1.0",
+    "purgecss": "^5.0.0",
+    "watch": "^1.0.2",
+    "webpack": "^4.29.0"
+  },
+  "scripts": {
+    "build": "purgecss --css node_modules/bootstrap/dist/css/bootstrap.min.css --content index.html --output style.css"
+  }
+}

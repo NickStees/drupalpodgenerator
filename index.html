@@ -1,21 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Drupal Pod Badge Generator</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    body{
+    body {
+      height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background: rgb(37, 157, 210);
+      background: radial-gradient(circle, rgba(37, 157, 210, 1) 0%, rgba(39, 109, 178, 1) 50%, rgba(41, 64, 140, 1) 100%);
     }
-    #gitpod-badge{
+
+    #gitpod-badge {
       max-width: 75vw;
       min-width: 500px;
       margin: auto;
     }
-    label{
+
+    label {
       font-weight: bold;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    .container {
+      height: 100vh;
+    }
+
+    .bubbles {
+      background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
     }
   </style>
 </head>
@@ -34,12 +53,12 @@
       coreVersions: [],
       projectVersions: [],
       projectDetails: {},
-      fetchProjectDetails: function() {
+      fetchProjectDetails: function () {
         // fetch project details
         this.loading = true;
         fetch(`https://www.drupal.org/api-d7/node.json?field_project_machine_name=${this.projectName}`).then(response => response.json()).then(data => {
           this.loading = false;
-          if(!data.list.length){return};
+          if (!data.list.length) { return };
           let thisProjectDetails = data.list[0];
           this.projectDetails = thisProjectDetails
           let projectVersions = Object.keys(thisProjectDetails.project_usage)
@@ -47,10 +66,10 @@
           !this.projectVersionSelected ? this.projectVersionSelected = projectVersions[0] : '';
         })
       },
-      fetchCoreVersions: function() {
+      fetchCoreVersions: function () {
         // if there is a query param like ?project=stage_file_proxy, set project name to stage_file_proxy
         let urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.has('project')){
+        if (urlParams.has('project')) {
           this.projectName = urlParams.get('project');
           this.fetchProjectDetails();
         }
@@ -66,12 +85,12 @@
           })
           !this.projectVersionSelected ? this.coreSelected = this.coreVersions[0].value : '';
           // Fetch project details if project name is set
-          if(this.projectName.length){
+          if (this.projectName.length) {
             this.fetchProjectDetails();
           }
         })
       },
-      copyToClipBoard: function() {
+      copyToClipBoard: function () {
         navigator.clipboard.writeText(this.buttonMarkup)
       },
       get gitPodURL() {
@@ -81,39 +100,53 @@
         return `<a href="${this.gitPodURL}"><img src="${this.imageSrc}" alt="OpenInDrupalPod" style="max-width: 100%;"></a><div><small>get your own at <a href="https://drupalpodbadge.netlify.app">DrupalPod</a></small></div>`
       }
     }).mount('#gitpod-badge')
-    </script>
+  </script>
 
-    <div id="gitpod-badge" v-scope v-effect="fetchCoreVersions()">
-      <h2>DrupalPod Badge Generator</h2>
-      <p>Project Page: <a href="https://github.com/shaal/DrupalPod">github.com/shaal/DrupalPod</a></p>
-        <label for="project">Drupal Project Name</label>
-        https://www.drupal.org/project/<input type="text" placeholder="machine_name" name="project" v-model="projectName" @blur="fetchProjectDetails" required>
-        <br>
-        <label for="core-version">Drupal Core Versions:</label>
-        <select name="core-version" v-model="coreSelected">
-          <option v-for="(option, index) in coreVersions" :value="option.value">{{ option.text }}</option>
-        </select>
-        <br>
-        <label for="install-profile">Install profile:</label>
-        <select name="install-profile" id="install-profile" v-model="installprofile">
-          <option v-for="option in installprofileOptions" :value="option">{{ option }}</option>
-        </select>
-        <div v-if="projectName.length">
-          <label for="project-version"><span v-if="projectDetails.title">{{projectDetails.title}}</span> Project Version:</label>
-          <select name="project-version" v-model="projectVersionSelected">
-            <option v-for="(value, index) in projectVersions" :value="value">{{ value }}</option>
-          </select>
-          <div v-if="loading"><h2>Loading...</h2></div>
-          <div v-if="coreSelected.length && projectVersionSelected.length && !loading">
-            <p v-html="buttonMarkup"></p>
-            <textarea v-model="buttonMarkup" name="code" id="" cols="60" rows="6" style="width:100%"></textarea>
-            <div>
-              <button @click="copyToClipBoard">Copy Badge Code</button>
+  <div class="container d-flex justify-content-center align-items-center">
+    <div class="row">
+      <div class="col">
+        <div class="card shadow p-4">
+
+
+          <div id="gitpod-badge" v-scope v-effect="fetchCoreVersions()">
+            <h2>DrupalPod Badge Generator</h2>
+            <p>Project Page: <a href="https://github.com/shaal/DrupalPod">github.com/shaal/DrupalPod</a></p>
+            <label for="project">Drupal Project Name</label>
+            https://www.drupal.org/project/<input type="text" placeholder="machine_name" name="project"
+              v-model="projectName" @blur="fetchProjectDetails" required>
+            <br>
+            <label for="core-version">Drupal Core Versions:</label>
+            <select name="core-version" v-model="coreSelected">
+              <option v-for="(option, index) in coreVersions" :value="option.value">{{ option.text }}</option>
+            </select>
+            <br>
+            <label for="install-profile">Install profile:</label>
+            <select name="install-profile" id="install-profile" v-model="installprofile">
+              <option v-for="option in installprofileOptions" :value="option">{{ option }}</option>
+            </select>
+            <div v-if="projectName.length">
+              <label for="project-version"><span v-if="projectDetails.title">{{projectDetails.title}}</span> Project
+                Version:</label>
+              <select name="project-version" v-model="projectVersionSelected">
+                <option v-for="(value, index) in projectVersions" :value="value">{{ value }}</option>
+              </select>
+              <div v-if="loading">
+                <h2>Loading...</h2>
+              </div>
+              <div v-if="coreSelected.length && projectVersionSelected.length && !loading">
+                <p v-html="buttonMarkup"></p>
+                <textarea v-model="buttonMarkup" name="code" id="" cols="60" rows="6" style="width:100%"></textarea>
+                <div>
+                  <button @click="copyToClipBoard">Copy Badge Code</button>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
+      </div>
     </div>
-
-
+  </div>
 </body>
+
 </html>

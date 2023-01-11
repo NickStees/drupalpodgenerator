@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"command": "./node_modules/.bin/onchange '*.html' -- npm run build",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "Custom build/watch",
+			"detail": "run and watch",
+			"runOptions": {
+				"runOn": "folderOpen"
+			}
+		}
+	]
+}
